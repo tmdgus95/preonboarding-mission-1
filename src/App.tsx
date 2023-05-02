@@ -1,9 +1,10 @@
+import { Outlet } from 'react-router-dom';
+
 function App() {
   return (
-    <div>
-      <p>1</p>
-    </div>
+    <main>
+      <Outlet />
+    </main>
   );
 }
-
 export default App;
