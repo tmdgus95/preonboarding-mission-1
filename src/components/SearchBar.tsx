@@ -6,27 +6,37 @@ import { ChangeEvent, useState } from 'react';
 import { KeyWordSearchInstance } from '../api/search';
 import { RootState } from '../store/store';
 import SearchResult from './SearchResult';
+import { setRecommend } from '../store/slice/recommendSlice';
 
 export default function SearchBar() {
   const dispatch = useDispatch();
   const keyword = useSelector((state: RootState) => state.keyword);
   const [focused, setFocused] = useState(false);
-  console.log(focused);
+  const [focusIdx, setFocusIdx] = useState(-1);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
     dispatch(setKeyword(keyword));
+    KeyWordSearchInstance.get(`/api/v1/search-conditions/?name=${keyword}`)
+      .then((res) => {
+        dispatch(setRecommend(res.data));
+        console.info('calling api');
+      })
+      .catch(console.log);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     KeyWordSearchInstance.get(`/api/v1/search-conditions/?name=${keyword}`)
-      .then(console.log)
+      .then((res) => {
+        dispatch(setRecommend(res.data));
+        console.info('calling api');
+      })
       .catch(console.log);
   };
 
   const handleFocus = () => {
-    setFocused(!focused);
+    setFocused((focused) => !focused);
   };
 
   return (
@@ -38,6 +48,7 @@ export default function SearchBar() {
           placeholder='질환명을 입력해 주세요.'
           onChange={handleChange}
           onFocus={handleFocus}
+          onBlur={handleFocus}
         />
         <AiOutlineSearch className='absolute top-5 left-4  text-gray-400 text-2xl' />
         <button className='absolute top-1 right-3 bg-searchRound p-3 rounded-full'>

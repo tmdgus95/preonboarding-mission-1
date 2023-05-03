@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import keywordSlice from './slice/keywordSlice';
+import recommendSlice from './slice/recommendSlice';
 
 export const store = configureStore({
-  reducer: { keyword: keywordSlice },
+  reducer: { keyword: keywordSlice, recommend: recommendSlice },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
