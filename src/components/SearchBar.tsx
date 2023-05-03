@@ -1,17 +1,50 @@
 import { AiOutlineSearch } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setKeyword } from '../store/slice/keywordSlice';
+import { ChangeEvent, useState } from 'react';
+import { KeyWordSearchInstance } from '../api/search';
+import { RootState } from '../store/store';
+import SearchResult from './SearchResult';
 
 export default function SearchBar() {
+  const dispatch = useDispatch();
+  const keyword = useSelector((state: RootState) => state.keyword);
+  const [focused, setFocused] = useState(false);
+  console.log(focused);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    dispatch(setKeyword(keyword));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    KeyWordSearchInstance.get(`/api/v1/search-conditions/?name=${keyword}`)
+      .then(console.log)
+      .catch(console.log);
+  };
+
+  const handleFocus = () => {
+    setFocused(!focused);
+  };
+
   return (
     <div className='relative'>
-      <input
-        type='text'
-        className='w-searchinput h-16 rounded-full pl-12 font-medium text-lg'
-        placeholder='질환명을 입력해 주세요.'
-      />
-      <AiOutlineSearch className='absolute top-5 left-4  text-gray-400 text-2xl' />
-      <button className='absolute top-1 right-3 bg-searchRound p-3 rounded-full'>
-        <AiOutlineSearch className='text-white text-3xl' />
-      </button>
+      <form onSubmit={handleSubmit}>
+        <input
+          type='text'
+          className='w-searchinput h-16 rounded-full pl-12 font-medium text-lg'
+          placeholder='질환명을 입력해 주세요.'
+          onChange={handleChange}
+          onFocus={handleFocus}
+        />
+        <AiOutlineSearch className='absolute top-5 left-4  text-gray-400 text-2xl' />
+        <button className='absolute top-1 right-3 bg-searchRound p-3 rounded-full'>
+          <AiOutlineSearch className='text-white text-3xl' />
+        </button>
+      </form>
+      {focused && <SearchResult />}
     </div>
   );
 }
