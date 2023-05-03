@@ -6,6 +6,7 @@ module.exports = {
       spacing: {
         pchi: '462px',
         mbhi: '543px',
+        searchinput: '430px',
       },
       colors: {
         visual: '#cae9ff',
