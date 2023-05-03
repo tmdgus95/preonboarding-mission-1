@@ -3,7 +3,6 @@ import { AiOutlineSearch } from 'react-icons/ai';
 type Props = {
   id?: number;
   name: string;
-  focus?: boolean;
 };
 
 export default function SearchExpectation({ id, name }: Props) {

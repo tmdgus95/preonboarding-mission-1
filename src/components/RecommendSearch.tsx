@@ -8,7 +8,7 @@ export default function RecommendSearch() {
   return (
     <div className='w-searchinput bg-white mt-4 p-6 rounded-xl'>
       <ul>
-        {recommends.map(({ name, id }, i) => (
+        {recommends.map(({ name, id }) => (
           <SearchExpectation key={id} name={name} id={id} />
         ))}
       </ul>

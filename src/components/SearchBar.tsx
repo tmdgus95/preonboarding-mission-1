@@ -12,7 +12,6 @@ export default function SearchBar() {
   const dispatch = useDispatch();
   const keyword = useSelector((state: RootState) => state.keyword);
   const [focused, setFocused] = useState(false);
-  const [focusIdx, setFocusIdx] = useState(-1);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
