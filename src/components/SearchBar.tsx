@@ -2,7 +2,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setKeyword } from '../store/slice/keywordSlice';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { KeyWordSearchInstance } from '../api/search';
 import { RootState } from '../store/store';
 import SearchResult from './SearchResult';
@@ -12,16 +12,32 @@ export default function SearchBar() {
   const dispatch = useDispatch();
   const keyword = useSelector((state: RootState) => state.keyword);
   const [focused, setFocused] = useState(false);
+  const debounceRef = useRef<null | NodeJS.Timeout>();
+  const recommends = useSelector((state: RootState) => state.recommend);
+  console.log(recommends);
+  // console.log(keyword);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const keyword = e.target.value;
-    dispatch(setKeyword(keyword));
+  const callApi = async (keyword: string) => {
     KeyWordSearchInstance.get(`/api/v1/search-conditions/?name=${keyword}`)
       .then((res) => {
         dispatch(setRecommend(res.data));
         console.info('calling api');
       })
       .catch(console.log);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    dispatch(setKeyword(keyword));
+    console.log(keyword);
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+
+    debounceRef.current = setTimeout(() => {
+      callApi(keyword);
+    }, 300);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
